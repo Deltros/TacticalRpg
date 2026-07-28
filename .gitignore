@@ -1,0 +1,7 @@
+node_modules/
+dist/
+*.log
+
+# Claude Code local settings (config de máquina, no del proyecto)
+.claude/settings.local.json
+.claude/*.tmp.*
