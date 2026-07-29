@@ -113,4 +113,27 @@ export class GridManager {
     ];
     return candidates.filter(p => this.isInBounds(p.col, p.row));
   }
+
+  /**
+   * Devuelve las casillas a distancia Manhattan <= `range` de `center`
+   * (sin incluir el centro), dentro de los límites del mapa.
+   *
+   * Es una consulta de geometría pura, no de movimiento: no mira terreno
+   * ni ocupación (a diferencia de MovementResolver). Sirve para rangos de
+   * ataque, que no dependen de poder "caminar" hasta el objetivo.
+   * Con range=1 da exactamente los mismos 4 vecinos que `getNeighbors`.
+   */
+  getTilesInRange(center: GridPosition, range: number): GridPosition[] {
+    const tiles: GridPosition[] = [];
+    for (let dRow = -range; dRow <= range; dRow++) {
+      const remaining = range - Math.abs(dRow);
+      for (let dCol = -remaining; dCol <= remaining; dCol++) {
+        if (dRow === 0 && dCol === 0) continue;
+        const col = center.col + dCol;
+        const row = center.row + dRow;
+        if (this.isInBounds(col, row)) tiles.push({ col, row });
+      }
+    }
+    return tiles;
+  }
 }

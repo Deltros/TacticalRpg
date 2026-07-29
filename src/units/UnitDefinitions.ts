@@ -25,11 +25,11 @@ export interface CharacterDefinition {
 }
 
 export const ARCHETYPES: Record<string, ArchetypeDefinition> = {
-  knight:  { baseStats: { moveRange: 6, attack: 8, defense: 6, attackRange: 1 }, actionKeys: ['move', 'wait'] },
-  archer:  { baseStats: { moveRange: 4, attack: 7, defense: 3, attackRange: 2 }, actionKeys: ['move', 'wait'] },
-  soldier: { baseStats: { moveRange: 3, attack: 6, defense: 4, attackRange: 1 }, actionKeys: ['move', 'wait'] },
-  mage:    { baseStats: { moveRange: 4, attack: 12, defense: 2, attackRange: 2 }, actionKeys: ['move', 'wait'] },
-  rogue:   { baseStats: { moveRange: 5, attack: 9, defense: 2, attackRange: 1 }, actionKeys: ['move', 'wait'] },
+  knight:  { baseStats: { moveRange: 6, attack: 8, defense: 6, attackRange: 1 }, actionKeys: ['move', 'attack', 'wait'] },
+  archer:  { baseStats: { moveRange: 4, attack: 7, defense: 3, attackRange: 2 }, actionKeys: ['move', 'attack', 'wait'] },
+  soldier: { baseStats: { moveRange: 3, attack: 6, defense: 4, attackRange: 1 }, actionKeys: ['move', 'attack', 'wait'] },
+  mage:    { baseStats: { moveRange: 4, attack: 12, defense: 2, attackRange: 2 }, actionKeys: ['move', 'attack', 'wait'] },
+  rogue:   { baseStats: { moveRange: 5, attack: 9, defense: 2, attackRange: 1 }, actionKeys: ['move', 'attack', 'wait'] },
 };
 
 export const CHARACTERS: Record<string, CharacterDefinition> = {
@@ -40,7 +40,7 @@ export const CHARACTERS: Record<string, CharacterDefinition> = {
     archetype: 'rogue',
     label: 'Astarion',
     statOverrides: { attack: 11 },
-    actionKeys: ['move', 'wait', 'backstab'],
+    actionKeys: ['move', 'attack', 'wait', 'backstab'],
     spriteKey: 'astarion',
     frameCount: 4,
   },

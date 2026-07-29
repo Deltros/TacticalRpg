@@ -1,8 +1,8 @@
 import Phaser from 'phaser';
-import { CANVAS_WIDTH, GRID_ROWS, TILE_SIZE, HUD_HEIGHT } from '../utils/constants';
+import { CANVAS_WIDTH, VIEWPORT_ROWS, TILE_SIZE, HUD_HEIGHT } from '../utils/constants';
 import type { TurnManager } from '../turn/TurnManager';
 
-const HUD_Y = GRID_ROWS * TILE_SIZE;
+const HUD_Y = VIEWPORT_ROWS * TILE_SIZE;
 
 /**
  * Franja inferior que muestra el turno actual y el botón de "Terminar Turno".
@@ -54,6 +54,8 @@ export class HUD extends Phaser.GameObjects.Container {
     this.add([bg, this.turnLabel, this.phaseLabel, this.endTurnBtn, this.endTurnText]);
     scene.add.existing(this);
     this.setDepth(50);
+    // Fijo en pantalla: no debe desplazarse cuando la cámara sigue el cursor por el mapa
+    this.setScrollFactor(0);
 
     this.buildEndTurnButton();
     this.refresh(turnManager);

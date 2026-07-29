@@ -1,20 +1,32 @@
-/** Tamaño de cada casilla en píxeles */
-export const TILE_SIZE = 64;
+/**
+ * Tamaño de cada casilla en píxeles. Único lugar donde se define — todo lo
+ * demás (grilla, overlays, escala de sprites, HUD) se calcula a partir de
+ * esto, así que cambiar solo este número reescala todo el juego junto.
+ */
+export const TILE_SIZE = 44;
 
-/** Número de columnas del tablero */
-export const GRID_COLS = 12;
-
-/** Número de filas del tablero */
-export const GRID_ROWS = 9;
+/**
+ * Columnas/filas visibles en pantalla a la vez (el "viewport").
+ * El mapa real (MapData.cols/rows) puede ser mucho más grande —
+ * la cámara se encarga de recorrerlo. No confundir con el tamaño del mapa.
+ */
+export const VIEWPORT_COLS = 20;
+export const VIEWPORT_ROWS = 12;
 
 /** Altura del HUD inferior en píxeles */
 export const HUD_HEIGHT = 64;
 
 /** Ancho total del canvas */
-export const CANVAS_WIDTH = TILE_SIZE * GRID_COLS;
+export const CANVAS_WIDTH = TILE_SIZE * VIEWPORT_COLS;
 
 /** Alto total del canvas (grilla + HUD) */
-export const CANVAS_HEIGHT = TILE_SIZE * GRID_ROWS + HUD_HEIGHT;
+export const CANVAS_HEIGHT = TILE_SIZE * VIEWPORT_ROWS + HUD_HEIGHT;
+
+/** Franja en píxeles desde el borde del viewport que dispara el scroll de cámara */
+export const EDGE_SCROLL_MARGIN = 56;
+
+/** Velocidad del scroll de cámara en píxeles por segundo */
+export const EDGE_SCROLL_SPEED = 480;
 
 /**
  * Catálogo de eventos del bus global.
@@ -31,12 +43,22 @@ export const EVENTS = {
   UNIT_MOVE_ANIMATION_DONE: 'unit:moveAnimDone',
   /** Una unidad terminó su turno (estado done). Payload: { unit: Unit } */
   UNIT_TURN_DONE: 'unit:turnDone',
+  /** Una unidad atacó a otra. Payload: { attacker: Unit, defender: Unit, damage: number } */
+  UNIT_ATTACKED: 'unit:attacked',
+  /** Una unidad quedó con 0 HP. Payload: { unit: Unit } */
+  UNIT_DEFEATED: 'unit:defeated',
   /** La fase activa cambió. Payload: { phase: TurnPhase } */
   PHASE_CHANGED: 'turn:phaseChanged',
-  /** El jugador hizo clic en una casilla de la grilla. Payload: GridPosition */
+  /** El jugador activó una casilla de la grilla (clic de mouse o Enter con el teclado). Payload: GridPosition */
   GRID_CLICK: 'input:gridClick',
-  /** El puntero está sobre una casilla. Payload: GridPosition */
+  /** El cursor de grilla se movió a una casilla (mouse o teclado). Payload: GridPosition */
   GRID_HOVER: 'input:gridHover',
+  /** El jugador canceló la acción/menú actual (tecla Esc o E). */
+  CANCEL: 'input:cancel',
+  /** Navegación dentro de un menú activo (tecla arriba/abajo o W/S). Payload: -1 | 1 */
+  MENU_NAVIGATE: 'input:menuNavigate',
+  /** Confirmar el ítem resaltado de un menú activo (tecla Enter). */
+  MENU_CONFIRM: 'input:menuConfirm',
 } as const;
 
 export type EventName = (typeof EVENTS)[keyof typeof EVENTS];
