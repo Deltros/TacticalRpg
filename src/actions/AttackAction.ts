@@ -2,18 +2,23 @@ import { GridPosition, posEquals } from '../utils/types';
 import { EVENTS } from '../utils/constants';
 import type { Unit } from '../units/Unit';
 import type { Action, ActionContext } from './Action';
+import type { DamageRoll } from '../combat/DamageRoll';
+import { StandardDamageRoll } from '../combat/DamageRoll';
 
 /**
  * Ataque cuerpo a cuerpo/a distancia básico: golpea a un enemigo dentro del
  * rango de ataque de la unidad (`unit.stats.attackRange`, distinto por
- * unidad) y le resta vida según su ataque vs. la defensa del objetivo.
+ * unidad) y le resta vida según su ataque vs. la defensa del objetivo,
+ * pasado por una tirada de azar (`DamageRoll`) que puede hacerlo fallar del
+ * todo o conectar solo parcialmente.
  *
  * Esta es la única variante de "atacar" por ahora. A futuro, una unidad con
  * un ataque distinto (crítico, curación, etc.) no requiere tocar esta
  * clase: se implementa como otra clase que cumple `Action` (con su propia
  * key, aunque el mismo label "Atacar"), se registra en el ACTIONS de
  * GameScene, y esa unidad la referencia en su `actionKeys` en vez de
- * 'attack' — el mismo mecanismo que ya usan move/wait/backstab.
+ * 'attack' — el mismo mecanismo que ya usan move/wait/backstab. Esa clase
+ * puede reusar `StandardDamageRoll` o inyectar su propia `DamageRoll`.
  *
  * Siempre aparece disponible mientras la unidad pueda actuar (igual que
  * Esperar): los objetivos son todo el rango de ataque, tenga o no un
@@ -23,6 +28,8 @@ import type { Action, ActionContext } from './Action';
 export class AttackAction implements Action {
   readonly key = 'attack';
   readonly label = 'Atacar';
+
+  constructor(private readonly damageRoll: DamageRoll = new StandardDamageRoll()) {}
 
   canExecute(unit: Unit, _ctx: ActionContext): boolean {
     return unit.state.canAct();
@@ -38,7 +45,8 @@ export class AttackAction implements Action {
     const defender = this.findEnemyAt(unit, target, ctx);
     if (!defender) return;
 
-    const damage = Math.max(1, unit.stats.attack - defender.stats.defense);
+    const baseDamage = Math.max(1, unit.stats.attack - defender.stats.defense);
+    const damage = this.damageRoll.roll(baseDamage);
     defender.stats.currentHp = Math.max(0, defender.stats.currentHp - damage);
 
     unit.state.transition('done');

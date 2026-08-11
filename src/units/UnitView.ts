@@ -150,4 +150,29 @@ export class UnitView extends Phaser.GameObjects.Container {
   refreshHp(): void {
     this.drawHpBar();
   }
+
+  /**
+   * Texto flotante que sube y se desvanece sobre la unidad al recibir un
+   * ataque: "-N" en rojo si conectó, "¡Falló!" en gris si el `DamageRoll`
+   * dio un fallo total (damage 0).
+   */
+  showDamagePopup(damage: number): void {
+    const isMiss = damage === 0;
+    const text = this.scene.add.text(0, -TILE_SIZE / 2, isMiss ? '¡Falló!' : `-${damage}`, {
+      fontSize: isMiss ? '11px' : '14px',
+      color: isMiss ? '#aaaaaa' : '#ff4444',
+      fontFamily: 'monospace',
+      fontStyle: 'bold',
+    }).setOrigin(0.5, 1);
+    this.add(text);
+
+    this.scene.tweens.add({
+      targets: text,
+      y: text.y - 24,
+      alpha: 0,
+      duration: 700,
+      ease: 'Cubic.Out',
+      onComplete: () => text.destroy(),
+    });
+  }
 }

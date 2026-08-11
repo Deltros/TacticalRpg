@@ -216,6 +216,12 @@ export class GameScene extends Phaser.Scene {
     this.events.on(EVENTS.GRID_HOVER, this.onGridHover, this);
     this.events.on(EVENTS.PHASE_CHANGED, this.onPhaseChanged, this);
     this.events.on(EVENTS.CANCEL, this.onCancel, this);
+    this.events.on(EVENTS.UNIT_ATTACKED, this.onUnitAttacked, this);
+  }
+
+  /** Muestra el popup de daño/fallo sobre el defensor cuando se resuelve un ataque */
+  private onUnitAttacked(payload: { defender: Unit; damage: number }): void {
+    this.unitViews.get(payload.defender.id)?.showDamagePopup(payload.damage);
   }
 
   /** Resalta en amarillo la casilla enfocada por mouse o teclado (mismo evento para ambos) */

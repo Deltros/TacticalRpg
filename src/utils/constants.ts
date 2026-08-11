@@ -28,6 +28,15 @@ export const EDGE_SCROLL_MARGIN = 56;
 /** Velocidad del scroll de cámara en píxeles por segundo */
 export const EDGE_SCROLL_SPEED = 480;
 
+/** Probabilidad de que un ataque falle por completo (0 de daño) */
+export const ATTACK_MISS_CHANCE = 0.1;
+
+/** Fracción mínima del daño base que conecta cuando el ataque no falla */
+export const ATTACK_MIN_DAMAGE_MULTIPLIER = 0.5;
+
+/** Fracción máxima del daño base que conecta cuando el ataque no falla */
+export const ATTACK_MAX_DAMAGE_MULTIPLIER = 1.0;
+
 /**
  * Catálogo de eventos del bus global.
  * Todos los sistemas emiten y escuchan estos strings, nunca los escriben en crudo.
@@ -43,7 +52,7 @@ export const EVENTS = {
   UNIT_MOVE_ANIMATION_DONE: 'unit:moveAnimDone',
   /** Una unidad terminó su turno (estado done). Payload: { unit: Unit } */
   UNIT_TURN_DONE: 'unit:turnDone',
-  /** Una unidad atacó a otra. Payload: { attacker: Unit, defender: Unit, damage: number } */
+  /** Una unidad atacó a otra. Payload: { attacker: Unit, defender: Unit, damage: number } (damage 0 = falló) */
   UNIT_ATTACKED: 'unit:attacked',
   /** Una unidad quedó con 0 HP. Payload: { unit: Unit } */
   UNIT_DEFEATED: 'unit:defeated',
